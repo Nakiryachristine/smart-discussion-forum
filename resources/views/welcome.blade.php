@@ -18,10 +18,10 @@
             </h1>
 
             <nav class="flex items-center gap-4">
-                <a href="#about" 
+                <!-- <a href="#about" 
                    class="px-5 py-2 text-gray-300 hover:text-white hover:bg-slate-800/50 rounded-lg transition">
                     About
-                </a>
+                </a> -->
 
                 @if (Route::has('login'))
                     @auth
