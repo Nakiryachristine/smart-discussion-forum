@@ -25,11 +25,16 @@ FROM php:8.4-apache
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libfreetype6-dev \
+# Install runtime libraries AND build dependencies in one step, then purge ONLY the dev headers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libfreetype6 \
         libicu-dev \
-        libjpeg62-turbo-dev \
+        libjpeg62-turbo \
+        libpq5 \
+        libpng16-16 \
+        libsqlite3-0 \
+        libzip4 \
+        libfreetype6-dev \
         default-libmysqlclient-dev \
         libpq-dev \
         libonig-dev \
@@ -52,7 +57,7 @@ RUN apt-get update \
     && a2enmod rewrite \
     && sed -ri "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/000-default.conf \
     && sed -ri "s!/var/www/!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf \
-    && apt-get purge -y --auto-remove \
+    && apt-get purge -y \
         libfreetype6-dev \
         libicu-dev \
         libjpeg62-turbo-dev \
