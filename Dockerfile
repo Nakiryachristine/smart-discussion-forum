@@ -30,6 +30,7 @@ RUN apt-get update \
 		libfreetype6-dev \
 		libicu-dev \
 		libjpeg62-turbo-dev \
+		default-libmysqlclient-dev \
 		libonig-dev \
 		libpng-dev \
 		libsqlite3-dev \
@@ -42,6 +43,7 @@ RUN apt-get update \
 		gd \
 		intl \
 		mbstring \
+		pdo_mysql \
 		pdo_sqlite \
 		zip \
 	&& a2enmod rewrite \
@@ -51,6 +53,7 @@ RUN apt-get update \
 		libfreetype6-dev \
 		libicu-dev \
 		libjpeg62-turbo-dev \
+		default-libmysqlclient-dev \
 		libonig-dev \
 		libpng-dev \
 		libsqlite3-dev \
@@ -70,4 +73,4 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "PORT=${PORT:-80}; sed -ri \"s/Listen 80/Listen $PORT/; s/\\*:80/\\*:$PORT/\" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf; exec apache2-foreground"]
