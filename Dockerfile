@@ -23,8 +23,6 @@ RUN composer install \
 
 FROM php:8.4-apache
 
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libicu-dev \
@@ -49,10 +47,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pdo_sqlite \
         zip \
     && a2enmod rewrite \
-    && sed -ri "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/000-default.conf \
-    && sed -ri "s!/var/www/!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf \
-    && printf '<Directory %s>\n    AllowOverride All\n    Require all granted\n</Directory>\n' "${APACHE_DOCUMENT_ROOT}" >> /etc/apache2/sites-available/000-default.conf \
     && rm -rf /var/lib/apt/lists/*
+
+COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
