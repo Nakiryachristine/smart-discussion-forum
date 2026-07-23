@@ -61,7 +61,20 @@
                             this.messages.push(e);
                             this.$nextTick(() => this.scrollToBottom());
                         });
+                    } else {
+                        setInterval(() => this.poll(), 4000);
                     }
+                },
+                poll() {
+                    const lastId = this.messages.length ? this.messages[this.messages.length - 1].id : 0;
+                    fetch(@json(route('messages.index', $group)) + '?after=' + lastId, {
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                    }).then(r => r.json()).then(data => {
+                        if (data.length) {
+                            this.messages.push(...data);
+                            this.$nextTick(() => this.scrollToBottom());
+                        }
+                    });
                 },
                 scrollToBottom() {
                     this.$refs.scrollArea.scrollTop = this.$refs.scrollArea.scrollHeight;

@@ -13,6 +13,22 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
+        // Polling fallback: return only new messages after a given id
+        if ($request->has('after')) {
+            return $group->messages()
+                ->visibleTo($user)
+                ->where('id', '>', (int) $request->query('after'))
+                ->with('sender')
+                ->oldest()
+                ->get()
+                ->map(fn ($m) => [
+                    'id' => $m->id,
+                    'sender_id' => $m->sender_id,
+                    'sender' => $m->sender->name,
+                    'body' => $m->body,
+                ])->values();
+        }
+
         $messages = $group->messages()
             ->visibleTo($user)
             ->with('sender')
