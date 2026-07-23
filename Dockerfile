@@ -43,6 +43,7 @@ RUN apt-get update \
 		gd \
 		intl \
 		mbstring \
+		mysqli \
 		pdo_mysql \
 		pdo_sqlite \
 		zip \
@@ -66,11 +67,13 @@ WORKDIR /var/www/html
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 COPY . .
+COPY start.sh /usr/local/bin/start.sh
 
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
 	&& chown -R www-data:www-data storage bootstrap/cache \
-	&& chmod -R ug+rwx storage bootstrap/cache
+	&& chmod -R ug+rwx storage bootstrap/cache \
+	&& chmod +x /usr/local/bin/start.sh
 
 EXPOSE 80
 
-CMD ["sh", "-c", "PORT=${PORT:-80}; sed -ri \"s/Listen 80/Listen $PORT/; s/\\*:80/\\*:$PORT/\" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf; exec apache2-foreground"]
+CMD ["/usr/local/bin/start.sh"]
