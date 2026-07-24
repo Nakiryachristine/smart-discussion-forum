@@ -12,7 +12,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_KEY
-        generateValue: true
+        sync: false   # set manually: run `php artisan key:generate --show` and paste the full base64:... value
       - key: APP_URL
         value: https://smart-discussion-forum.onrender.com   # update after first deploy
 

@@ -12,8 +12,8 @@ php artisan migrate --force
 php artisan db:seed --force --class=DatabaseSeeder 2>/dev/null || true
 php artisan storage:link 2>/dev/null || true
 php artisan cache:clear
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
 
 exec apache2-foreground
